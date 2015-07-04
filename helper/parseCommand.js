@@ -39,6 +39,7 @@ var parseCommand = function(msgId, data, myCache){
       cmdCB.exec(msgId,data,myCache);
     }
   }else {
+    myCache.del(''+data.chat_id+data.from_id);
     telegram.sendMessage(data.chat_id,'Non sei admin!',msgId);
   }
 };
