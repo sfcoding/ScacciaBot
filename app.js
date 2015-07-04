@@ -27,13 +27,12 @@ var app = module.exports = express();
 app.set('port', process.env.PORT || 5000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
+app.set('env', process.env.NODE_ENV || 'development');
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
-
-var env = process.env.NODE_ENV || 'development';
 
 var TOKEN = process.env.TOKEN;
 var WEBHOOK_URL = process.env.WEBHOOK_URL;
@@ -49,17 +48,9 @@ if ('development' == app.get('env')) {
 // production only
 if ('production' == app.get('env')) {
   console.log("production");
-
-  request({
-      url: 'https://api.telegram.org/'+TOKEN+'/setWebhook',
-      method: 'POST',
-      form: {url: WEBHOOK_URL},
-  }, function(error, response, body){
-      if(error) {
-          console.log(error);
-      } else {
-          console.log(response.statusCode, body);
-      }
+  telegram.setWebHook(WEBHOOK_URL,function(data){
+    if(data)
+      console.log(data);
   });
 }
 
@@ -87,10 +78,10 @@ mongoose.connect('mongodb://'+app.get('mongodb_uri')+'/personal', function(err) 
  */
 
 app.get('/',function(req,res,next){
-  res.send('Working!asd1');
+  res.send('Working!');
 });
 
-app.use('/debugdb',require('./routes/debugDB'));
+//app.use('/debugdb',require('./routes/debugDB'));
 
 //example of cache Object
 /*
@@ -178,7 +169,7 @@ app.use(function(req, res, next) {
 
 
 // development only
-if (env === 'development') {
+if (app.get('env') === 'development') {
   app.use(errorhandler());
   // development error handler
   // will print stacktrace
@@ -193,7 +184,7 @@ if (env === 'development') {
 }
 
 // production only
-if (env === 'production') {
+if (app.get('env') === 'production') {
   //DEBUG_FILE
   /*var logDirectory = __dirname + '/log';
   fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory)
