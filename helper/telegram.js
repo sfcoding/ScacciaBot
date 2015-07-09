@@ -52,7 +52,7 @@ function API (token){
     keyboard:
   }
   */
-  this.sendMessage = function (odj, cb){
+  this.sendMessage = function (obj, cb){
     var form = {text: odj.text, chat_id: odj.chat_id};
     if (obj.replay_to) form.reply_to_message_id = obj.replay_to;
     if (obj.keyboard) form.reply_markup = createKeybord(obj.keyboard);
