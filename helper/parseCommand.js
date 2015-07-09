@@ -1,19 +1,22 @@
-var TelegramHelper = require('./telegram');
-var telegram = new TelegramHelper(process.env.TOKEN);
-var db = require('../models');
+var TelegramHelper = require('./telegram'),
+    telegram = new TelegramHelper(process.env.TOKEN),
+    db = require('../models'),
+    myCache = require('./cache');
+
+var pickAnUser = function(msgId,data){ //CHOUSE USER
+  db.Users.findAll({}).then(function(userList){
+    var keyArray = telegram.arrayToKeyboard(userList,'name');
+    telegram.sendMessage({chat_id: data.chat_id,
+                          text: 'choose an user..',
+                          replay_to: msgId,
+                          keyboard: keyArray});
+  });
+};
 
 var callbacks = {
   '/addword': {
       option : [
-        function(msgId,data){ //CHOUSE USER
-          db.Users.findAll({}).then(function(userList){
-            var keyArray = telegram.arrayToKeyboard(userList,'name');
-            telegram.sendMessage({chat_id: data.chat_id,
-                                  text: 'choose an user..',
-                                  replay_to: msgId,
-                                  keyboard: keyArray});
-          });
-        },
+        pickAnUser,
         function(msgId,data){ //WRIATE A WORD
           telegram.sendMessage({chat_id: data.chat_id,
                                 text: 'write a word..',
@@ -25,11 +28,36 @@ var callbacks = {
         db.Users.findOne({id: data.option[0]}).then(function(user){
           user.createPriWords({word: data.option[1]}).then(function(word){
             console.log('create word %j',word);
+            telegram.sendMessage({chat_id: data.chat_id,
+                                  text: 'world('+data.option[1]+') add for user('+data.option[0]+')',
+                                  replay_to: msgId});
+
+            });
           });//add the word to the database
-        });
-      },
+        },
       admin: true
   },
+  '/list': {
+    option: [
+      pickAnUser
+    ],
+    exec: function(msgId,data){
+      db.Users.findOne({id: data.option[0]}).then(function(user){
+        user.getPriWords({}).then(function(words){
+          console.log('create word %j',words);
+          var str='';
+          for(var i=0; i<word.length; i++){
+            str+=words.word+'\n';
+          }
+          telegram.sendMessage({chat_id: data.chat_id,
+                                text: str,
+                                replay_to: msgId});
+
+          });
+        });//add the word to the database
+      },
+      admin: false
+    },
   '/help': {
     option: null,
     exec: function(msgId,data){
@@ -41,17 +69,19 @@ var callbacks = {
   }
 };
 
-var parseCommand = function(msgId, data, myCache){
-  var cmdCB = callbacks[data.cmd];
+var parseCommand = function(msgId, data){
+  var cmdCB = callbacks[data.cmd],
+      keyCache = ''+data.chat_id+data.from_id;
+
   if ( (cmdCB.admin && data.admin) || !cmdCB.admin){
     if (cmdCB.option && cmdCB.option.length > data.option.length)
       cmdCB.option[data.option.length](msgId, data);
     else{
-      myCache.del(''+data.chat_id+data.from_id);
-      cmdCB.exec(msgId,data,myCache);
+      myCache.del(keyCache);
+      cmdCB.exec(msgId,data);
     }
   }else {
-    myCache.del(''+data.chat_id+data.from_id);
+    myCache.del(keyCache);
     telegram.sendMessage(data.chat_id,'Non sei admin!',msgId);
   }
 };
