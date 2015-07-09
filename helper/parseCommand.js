@@ -46,7 +46,7 @@ var callbacks = {
         user.getPriWords({}).then(function(words){
           console.log('create word %j',words);
           var str='';
-          for(var i=0; i<word.length; i++){
+          for(var i=0; i<words.length; i++){
             str+=words.word+'\n';
           }
           telegram.sendMessage({chat_id: data.chat_id,
