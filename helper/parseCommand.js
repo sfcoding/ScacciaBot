@@ -43,7 +43,7 @@ var callbacks = {
 
 var parseCommand = function(msgId, data, myCache){
   var cmdCB = callbacks[data.cmd];
-  if (cmdCB.admin==data.admin){
+  if ( (cmdCB.admin && data.admin) || !cmdCB.admin){
     if (cmdCB.option && cmdCB.option.length > data.option.length)
       cmdCB.option[data.option.length](msgId, data);
     else{

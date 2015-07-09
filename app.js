@@ -217,7 +217,7 @@ if (app.get('env') === 'production') {
     require('./test/dbdata')();
 
     //MODADMIN
-    require('./test/addAdmin')();
+    //require('./test/addAdmin')();
   });
 }
 
