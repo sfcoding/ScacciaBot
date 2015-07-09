@@ -8,22 +8,34 @@ var callbacks = {
         function(msgId,data){ //CHOUSE USER
           db.Users.findAll({}).then(function(userList){
             var keyArray = telegram.arrayToKeyboard(userList,'name');
-            telegram.sendMessage(data.chat_id,'choose an user..',msgId,keyArray);
+            telegram.sendMessage({chat_id: data.chat_id,
+                                  text: 'choose an user..',
+                                  replay_to: msgId,
+                                  keyboard: keyArray});
           });
         },
         function(msgId,data){ //WRIATE A WORD
-          telegram.sendMessage(data.chat_id,'write a word',msgId);// will need force replay object
+          telegram.sendMessage({chat_id: data.chat_id,
+                                text: 'write a word..',
+                                replay_to: msgId,
+                                force_replay: true});// will need force replay object
         }
       ],
       exec: function(msgId,data){
-        //add the word to the database
+        db.Users.findOne({id: data.option[0]}).then(function(user){
+          user.createPriWords({word: data.option[1]}).then(function(word){
+            console.log('create word %j',word);
+          });//add the word to the database
+        });
       },
       admin: true
   },
   '/help': {
     option: null,
     exec: function(msgId,data){
-      telegram.sendMessage(data.chat_id,'lista comandi',msgId);
+      telegram.sendMessage({chat_id: data.chat_id,
+                            text: 'lista comandi',
+                            replay_to: msgId});
     },
     admin: false
   }

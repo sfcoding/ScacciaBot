@@ -86,8 +86,11 @@ app.get('/',function(req,res,next){
 //example of cache Object
 /*
 {
-  cmd: '/adduser',
-  option: [ 234234, ]
+  cmd: cmd,
+  option: [],
+  chat_id: chatId,
+  from_id: fromId,
+  admin: user.admin
 }
 */
 

@@ -10,6 +10,13 @@ function API (token){
     });
   };
 
+  var createForceReplay = function(){
+    return JSON.stringify({
+      force_reply: true,
+      selective: true
+    });
+  };
+
   var parseReturn = function(body){
       var res = JSON.parse(body);
       if (res.ok)
@@ -21,6 +28,7 @@ function API (token){
     for (var i=0;i<obj.length;i++){
       res.push([obj[i][key]]);
     }
+    return res;
   };
 
   this.getMe = function(cb){
@@ -35,14 +43,24 @@ function API (token){
     });
   };
 
-  this.sendMessage = function (chatId,text,msgId,key, cb){
-    var obj = {text: text, chat_id: chatId};
-    if(msgId) obj.reply_to_message_id = msgId;
-    if(key) obj.reply_markup = createKeybord(key);
+  /*
+  {
+    text:
+    chat_id:
+    replay_to:
+    force_replay:
+    keyboard:
+  }
+  */
+  this.sendMessage = function (odj, cb){
+    var form = {text: odj.text, chat_id: odj.chat_id};
+    if (obj.replay_to) form.reply_to_message_id = obj.replay_to;
+    if (obj.keyboard) form.reply_markup = createKeybord(obj.keyboard);
+    if (obj.force_replay) form.reply_markup = createForceReplay();
     request({
         url: URL+'/sendmessage',
         method: 'POST',
-        form: obj,
+        form: form,
     }, function(error, response, body){
       if (cb){
         if(error) cb(null);

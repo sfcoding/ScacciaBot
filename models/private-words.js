@@ -2,7 +2,6 @@
 
 module.exports = function(sequelize, DataTypes) {
   var PriWords = sequelize.define("PriWords", {
-    //id: {type: DataTypes.INTEGER.UNSIGNED, primaryKey:true},
     word: DataTypes.STRING,
     money: DataTypes.INTEGER.UNSIGNED.ZEROFILL,
   }, {
