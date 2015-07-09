@@ -53,7 +53,7 @@ function API (token){
   }
   */
   this.sendMessage = function (obj, cb){
-    var form = {text: odj.text, chat_id: odj.chat_id};
+    var form = {text: obj.text, chat_id: obj.chat_id};
     if (obj.replay_to) form.reply_to_message_id = obj.replay_to;
     if (obj.keyboard) form.reply_markup = createKeybord(obj.keyboard);
     if (obj.force_replay) form.reply_markup = createForceReplay();
