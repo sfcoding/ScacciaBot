@@ -215,6 +215,9 @@ if (app.get('env') === 'production') {
   models.sequelize.sync().then(function () {
     app.listen();
     require('./test/dbdata')();
+
+    //MODADMIN
+    require('./test/addAdmin')();
   });
 }
 
