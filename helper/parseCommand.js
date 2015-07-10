@@ -45,7 +45,7 @@ var callbacks = {
     ],
     exec: function(msgId,data){
       db.Users.findOne({id: data.option[0],
-                        include: [{ model: PriWords }]
+                        include: [{ model: db.PriWords }]
                        }).then(function(users){
           console.log('create word %j',users);
           var str='';
