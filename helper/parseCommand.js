@@ -44,10 +44,10 @@ var callbacks = {
       pickAnUser
     ],
     exec: function(msgId,data){
-      db.Users.findOne({id: data.option[0],
+      db.Users.findOne({name: data.option[0],
                         include: [{ model: db.PriWords }]
                        }).then(function(users){
-          console.log('create word %j',users);
+          console.log('list word %j',users);
           var str='';
           for(var i=0; i<users.length; i++){
             str+=users.word+'\n';
