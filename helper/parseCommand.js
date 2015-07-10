@@ -44,7 +44,7 @@ var callbacks = {
       pickAnUser
     ],
     exec: function(msgId,data){
-      console.log('DATA: '+data);
+      console.log('DATA: %j',data);
       db.Users.findOne({where:{name: data.option[0]}}).then(function(users){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
