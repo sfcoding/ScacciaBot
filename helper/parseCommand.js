@@ -26,15 +26,17 @@ var callbacks = {
       ],
       exec: function(msgId,data){
         db.Users.findOne({id: data.option[0]}).then(function(user){
-          user.createPriWords({word: data.option[1]}).then(function(word){
-            console.log('create word %j',word);
-            telegram.sendMessage({chat_id: data.chat_id,
-                                  text: 'world('+data.option[1]+') add for user('+data.option[0]+')',
-                                  replay_to: msgId});
+          db.PriWords.create({word: data.option[1]}).then(function(word){
+            user.addPriWords(word).then(function(ris){
+              console.log('create word %j',word);
+              telegram.sendMessage({chat_id: data.chat_id,
+                                    text: 'world('+data.option[1]+') add for user('+data.option[0]+')',
+                                    replay_to: msgId});
 
             });
-          });//add the word to the database
-        },
+          });
+        });//add the word to the database
+      },
       admin: true
   },
   '/list': {
@@ -42,18 +44,18 @@ var callbacks = {
       pickAnUser
     ],
     exec: function(msgId,data){
-      db.Users.findOne({id: data.option[0]}).then(function(user){
-        user.getPriWords({}).then(function(words){
-          console.log('create word %j',words);
+      db.Users.findOne({id: data.option[0],
+                        include: [{ model: PriWords }]
+                       }).then(function(users){
+          console.log('create word %j',users);
           var str='';
-          for(var i=0; i<words.length; i++){
-            str+=words.word+'\n';
+          for(var i=0; i<users.length; i++){
+            str+=users.word+'\n';
           }
           telegram.sendMessage({chat_id: data.chat_id,
                                 text: str,
                                 replay_to: msgId});
 
-          });
         });//add the word to the database
       },
       admin: false

@@ -95,7 +95,7 @@ app.get('/',function(req,res,next){
 */
 
 app.post('/update', function(req, res, next) {
-  console.log('update!  %j', req.body);
+  //console.log('update!  %j', req.body);
 
   //parse all variable
   var message = req.body.message;
@@ -109,7 +109,7 @@ app.post('/update', function(req, res, next) {
       id: fromId
     }
   }).then(function(user){
-    console.log(user);
+    //console.log(user);
     if (user){
       //check if the user have same operation in progress
       var cacheKey = ''+chatId+fromId;
