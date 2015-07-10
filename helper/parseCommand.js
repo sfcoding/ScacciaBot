@@ -44,17 +44,19 @@ var callbacks = {
       pickAnUser
     ],
     exec: function(msgId,data){
-      db.Users.findOne({name: data.option[0],
-                        include: [{ model: db.PriWords }]
-                       }).then(function(users){
-          console.log('list word %j',users);
-          var str='';
-          for(var i=0; i<users.length; i++){
-            str+=users.word+'\n';
-          }
-          telegram.sendMessage({chat_id: data.chat_id,
-                                text: str,
-                                replay_to: msgId});
+      db.Users.findOne({name: data.option[0]
+      }).then(function(users){
+          users.getPriWords().then(function(words){
+            console.log('list word %j',words);
+            var str='';
+            for(var i=0; i<words.length; i++){
+              str+=words.word+'\n';
+            }
+            telegram.sendMessage({chat_id: data.chat_id,
+                                  text: str,
+                                  replay_to: msgId});
+
+          });
 
         });//add the word to the database
       },
