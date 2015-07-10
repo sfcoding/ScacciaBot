@@ -50,7 +50,7 @@ var callbacks = {
             console.log('list word %j',words);
             var str=data.option[0]+'\n';
             for(var i=0; i<words.length; i++){
-              str+=words.word+'\n';
+              str+=words[i].word+'\n';
             }
             telegram.sendMessage({chat_id: data.chat_id,
                                   text: str,
