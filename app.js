@@ -113,35 +113,36 @@ app.post('/update', function(req, res, next) {
     if (user){
       //check if the user have same operation in progress
       var cacheKey = ''+chatId+fromId;
-      var cache_data = myCache.get(cacheKey);
-      if(cache_data){
-        cache_data.option.push(text);
-        myCache.set(cacheKey,cache_data);
-        parseCommand(messageId,cache_data);
+
+      //if find a command
+      if (text[0] == '/'){
+        var cmd = text.split(' ')[0].split(BOT_NAME)[0];
+        //var option = text.slice(1);
+        var cacheObj={
+          cmd: cmd,
+          option: [],
+          chat_id: chatId,
+          from_id: fromId,
+          admin: user.admin
+        };
+        myCache.set(cacheKey,cacheObj);
+        parseCommand(messageId,cacheObj);
+        /*switch (cmd) {
+          case '/hello':
+            telegram.sendMessage(chatId, 'Hello World! - 2');
+            break;
+          case '/help':
+            telegram.sendMessage(chatId,'list of command:');
+            break;
+          case '/addword':
+            break;
+        }*/
       }else{
-        //if find a command
-        if (text[0] == '/'){
-          var cmd = text.split(' ')[0].split(BOT_NAME)[0];
-          //var option = text.slice(1);
-          var cacheObj={
-            cmd: cmd,
-            option: [],
-            chat_id: chatId,
-            from_id: fromId,
-            admin: user.admin
-          };
-          myCache.set(cacheKey,cacheObj);
-          parseCommand(messageId,cacheObj);
-          /*switch (cmd) {
-            case '/hello':
-              telegram.sendMessage(chatId, 'Hello World! - 2');
-              break;
-            case '/help':
-              telegram.sendMessage(chatId,'list of command:');
-              break;
-            case '/addword':
-              break;
-          }*/
+        var cache_data = myCache.get(cacheKey);
+        if(cache_data){
+          cache_data.option.push(text);
+          myCache.set(cacheKey,cache_data);
+          parseCommand(messageId,cache_data);
         }else{
           //check the words
 
