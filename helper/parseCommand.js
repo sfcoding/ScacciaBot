@@ -44,11 +44,10 @@ var callbacks = {
       pickAnUser
     ],
     exec: function(msgId,data){
-      db.Users.findOne({name: data.option[0]
-      }).then(function(users){
+      db.Users.findOne({where:{name: data.option[0]}}).then(function(users){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
-            var str='';
+            var str=data.option[0]+'\n';
             for(var i=0; i<words.length; i++){
               str+=words.word+'\n';
             }
