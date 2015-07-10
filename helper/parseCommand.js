@@ -48,7 +48,7 @@ var callbacks = {
       db.Users.findOne({where:{name: data.option[0]}}).then(function(users){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
-            var str=data.option[0]+'\n';
+            var str='';
             for(var i=0; i<words.length; i++){
               str+=words[i].word+'\n';
             }
