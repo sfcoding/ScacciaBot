@@ -26,7 +26,7 @@ var callbacks = {
       ],
       exec: function(msgId,data){
         var user = data.option[0].split(' ');
-        db.Users.findOne({name: user[0], username: user[1]}).then(function(user){
+        db.Users.findOne({where:{name: user[0], username: user[1]}}).then(function(user){
           db.PriWords.create({word: data.option[1]}).then(function(word){
             user.addPriWords(word).then(function(ris){
               console.log('create word %j',word);
@@ -46,7 +46,8 @@ var callbacks = {
     ],
     exec: function(msgId,data){
       console.log('DATA: %j',data);
-      db.Users.findOne({where:{name: data.option[0]}}).then(function(users){
+      var user = data.option[0].split(' ');
+      db.Users.findOne({where:{name: user[0], username: user[1]}}).then(function(users){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
             var str='';
