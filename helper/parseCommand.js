@@ -53,7 +53,7 @@ var callbacks = {
               str+=words[i].word+'\n';
             }
             telegram.sendMessage({chat_id: data.chat_id,
-                                  text: str,
+                                  text: str ? str : 'empty',
                                   replay_to: msgId});
 
           });
