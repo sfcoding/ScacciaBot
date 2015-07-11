@@ -30,10 +30,14 @@ function API (token){
         return res.result;
   };
 
-  this.arrayToKeyboard = function(obj,key){
+  this.arrayToKeyboard = function(obj,keys){
     var res = [];
     for (var i=0;i<obj.length;i++){
-      res.push([obj[i][key]]);
+      var row = '';
+      for (var j=0;i<keys.length;i++){
+        row+=obj[i][keys[j]]+' ';
+      }
+      res.push([row]);
     }
     return res;
   };

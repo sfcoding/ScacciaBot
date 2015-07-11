@@ -5,7 +5,7 @@ var TelegramHelper = require('./telegram'),
 
 var pickAnUser = function(msgId,data){ //CHOUSE USER
   db.Users.findAll({}).then(function(userList){
-    var keyArray = telegram.arrayToKeyboard(userList,'name');
+    var keyArray = telegram.arrayToKeyboard(userList,['name', 'username']);
     telegram.sendMessage({chat_id: data.chat_id,
                           text: 'choose an user..',
                           replay_to: msgId,
@@ -25,7 +25,8 @@ var callbacks = {
         }
       ],
       exec: function(msgId,data){
-        db.Users.findOne({id: data.option[0]}).then(function(user){
+        var user = data.option[0].split(' ');
+        db.Users.findOne({name: user[0], username: user[1]}).then(function(user){
           db.PriWords.create({word: data.option[1]}).then(function(word){
             user.addPriWords(word).then(function(ris){
               console.log('create word %j',word);
