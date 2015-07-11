@@ -5,7 +5,7 @@ function API (token){
   var createKeybord = function(key){
     return JSON.stringify({
       keyboard: key,
-      one_time_keyboard: false,
+      one_time_keyboard: true,
       selective: true
     });
   };
@@ -13,6 +13,13 @@ function API (token){
   var createForceReplay = function(){
     return JSON.stringify({
       force_reply: true,
+      selective: true
+    });
+  };
+
+  var createHideKeyboard = function(){
+    return JSON.stringify({
+      hide_keyboard: true,
       selective: true
     });
   };
@@ -53,7 +60,7 @@ function API (token){
   }
   */
   this.sendMessage = function (obj, cb){
-    var form = {text: obj.text, chat_id: obj.chat_id};
+    var form = {text: obj.text, chat_id: obj.chat_id, reply_markup:createHideKeyboard()};
     if (obj.replay_to) form.reply_to_message_id = obj.replay_to;
     if (obj.keyboard) form.reply_markup = createKeybord(obj.keyboard);
     if (obj.force_replay) form.reply_markup = createForceReplay();
