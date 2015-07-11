@@ -34,7 +34,7 @@ function API (token){
     var res = [];
     for (var i=0;i<obj.length;i++){
       var row = '';
-      for (var j=0;i<keys.length;i++){
+      for (var j=0;j<keys.length;j++){
         row+=obj[i][keys[j]]+' ';
       }
       res.push([row]);
