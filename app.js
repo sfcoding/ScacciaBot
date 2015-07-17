@@ -99,7 +99,7 @@ app.post('/update', function(req, res, next) {
   var text = message.text;
 
   db.Users.findOne({ where: {id: fromId} }).then(function(user){
-    tc.parseCommand(msg, function(cmd,msg,data){
+    tc.parseCommand(message, function(cmd,msg,data){
       if (cmd)
         return !data.admin || user.admin;
       else{
