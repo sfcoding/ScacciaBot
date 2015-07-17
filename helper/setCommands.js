@@ -36,7 +36,7 @@ module.exports = function(tc){
       pickAnUser
     ],
     exec: function(option,res){
-      console.log('DATA: %j',data);
+      //console.log('DATA: %j',data);
       var user = option[0].obj;
       db.Users.findOne({where:{name:user.name, username: user.username}}).then(function(users){
           users.getPriWords().then(function(words){
