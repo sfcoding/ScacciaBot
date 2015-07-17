@@ -42,12 +42,12 @@ module.exports = function(tc){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
             if (words)
-              res.sendList(words, "{{word}} - {{money}}");
+              res.sendList(words, "{{word}}");
             else
               res.send("no word");
           });
 
-        });//add the word to the database
+        });
     },
     admin: false
   });
