@@ -22,7 +22,7 @@ module.exports = function(tc){
         db.PriWords.create({word: word}).then(function(word){
           user.addPriWords(word).then(function(ris){
             console.log('create word %j',word);
-            res.send('world('+data.option[1]+') add for user('+data.option[0]+')');
+            res.send('world('+word+') add for user('+user+')');
           });
         });
       });//add the word to the database
