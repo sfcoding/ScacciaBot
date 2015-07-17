@@ -1,4 +1,6 @@
 "use strict";
+var pg = require('pg');
+delete pg.native;
 
 var fs        = require("fs");
 var path      = require("path");
