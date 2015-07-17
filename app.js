@@ -12,10 +12,10 @@ var express = require('express'),
   winston = require('winston'),
   expressWinston = require('express-winston'),
 
-  models = require("./models"),
-  telegramHeper = require('./helper/telegram'),
-  parseCommand = require('./helper/parseCommand'),
-  myCache = require('./helper/cache');
+  db = require("./models"),
+  telegramHeper = require('./lib/telegramAPI'),
+  parseCommand = require('./helper/setCommands');
+  //myCache = require('./helper/cache');
 
 var app = module.exports = express();
 
@@ -83,16 +83,10 @@ app.get('/',function(req,res,next){
 
 //app.use('/debugdb',require('./routes/debugDB'));
 
-//example of cache Object
-/*
-{
-  cmd: cmd,
-  option: [],
-  chat_id: chatId,
-  from_id: fromId,
-  admin: user.admin
-}
-*/
+var TelegramCommands = require('../lib/telegramCommands');
+var tc = new TelegramCommands(BOT_NAME);
+require('/helper/setCommands')(tc);
+
 
 app.post('/update', function(req, res, next) {
   //console.log('update!  %j', req.body);
@@ -104,61 +98,15 @@ app.post('/update', function(req, res, next) {
   var messageId = message.message_id;
   var text = message.text;
 
-  models.Users.findOne({
-    where: {
-      id: fromId
-    }
-  }).then(function(user){
-    //console.log(user);
-    if (user){
-      //check if the user have same operation in progress
-      var cacheKey = ''+chatId+fromId;
-
-      //if find a command
-      if (text[0] == '/'){
-        var cmd = text.split(' ')[0].split(BOT_NAME)[0];
-        //var option = text.slice(1);
-        var cacheObj={
-          cmd: cmd,
-          option: [],
-          chat_id: chatId,
-          from_id: fromId,
-          admin: user.admin
-        };
-        myCache.set(cacheKey,cacheObj);
-        parseCommand(messageId,cacheObj);
-        /*switch (cmd) {
-          case '/hello':
-            telegram.sendMessage(chatId, 'Hello World! - 2');
-            break;
-          case '/help':
-            telegram.sendMessage(chatId,'list of command:');
-            break;
-          case '/addword':
-            break;
-        }*/
-      }else{
-        var cache_data = myCache.get(cacheKey);
-        if(cache_data){
-          cache_data.option.push(text);
-          myCache.set(cacheKey,cache_data);
-          parseCommand(messageId,cache_data);
-        }else{
-          //check the words
-
-        }
+  db.Users.findOne({ where: {id: fromId} }).then(function(user){
+    tc.parseCommand(msg, function(cmd,msg,data){
+      if (cmd)
+        return !data.admin || user.admin;
+      else{
+        //is not a command
       }
-      /*else if (cmd == '/adduser'){
-        models.Users.create({id: message.from.id,
-                             username: message.from.username,
-                             name: message.from.first_name}).then(function(data){
-                               console.log('add user %s with id %i',data.username,data.id);
-                             });
-      }*/
-    }
+    });
   });
-
-
   res.send('ok');
 });
 
