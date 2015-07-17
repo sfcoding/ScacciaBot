@@ -41,7 +41,7 @@ module.exports = function(tc){
       db.Users.findOne({where:{name:user.name, username: user.username}}).then(function(users){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
-            if (words){
+            if (words.length!==0){
               //res.send("Test");
               res.sendList(words, "{{word}} - {{money}}€");
             }else
