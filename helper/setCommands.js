@@ -19,10 +19,10 @@ module.exports = function(tc){
       var user = option[0].obj;
       var word = option[1].str;
       db.Users.findOne({where:{name: user.name, username: user.username}}).then(function(user){
-        db.PriWords.create({word: word}).then(function(word){
-          user.addPriWords(word).then(function(ris){
-            console.log('create word %j',word);
-            res.send('world('+word+') add for user('+user+')');
+        db.PriWords.create({word: word}).then(function(wordDb){
+          user.addPriWords(wordDb).then(function(ris){
+            console.log('create word %j',wordDb);
+            res.send('world('+word+') add for user('+user.name+')');
           });
         });
       });//add the word to the database
