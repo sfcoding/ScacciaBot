@@ -43,7 +43,7 @@ module.exports = function(tc){
             console.log('list word %j',words);
             if (words){
               //res.send("Test");
-              res.sendList(words, "{{word}}");
+              res.sendList(words, "{{word}} - {{money}}€");
             }else
               res.send("no word");
           });
