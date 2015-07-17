@@ -42,8 +42,8 @@ module.exports = function(tc){
           users.getPriWords().then(function(words){
             console.log('list word %j',words);
             if (words){
-              res.send("Test");
-              //res.sendList(words, "{{word}}");
+              //res.send("Test");
+              res.sendList(words, "{{word}}");
             }else
               res.send("no word");
           });
