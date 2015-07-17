@@ -38,7 +38,9 @@ var TOKEN = process.env.TOKEN;
 var WEBHOOK_URL = process.env.WEBHOOK_URL;
 var BOT_NAME = process.env.BOT_NAME;
 var telegram = new telegramHeper(TOKEN);
-//var myCache =  new NodeCache( { stdTTL: 60/*, checkperiod: 120*/} );
+var TelegramCommands = require('./lib/telegramCommands');
+var tc = new TelegramCommands(BOT_NAME, TOKEN);
+require('./helper/setCommands')(tc);
 
 // development only
 if ('development' == app.get('env')) {
@@ -82,11 +84,6 @@ app.get('/',function(req,res,next){
 });
 
 //app.use('/debugdb',require('./routes/debugDB'));
-
-var TelegramCommands = require('./lib/telegramCommands');
-var tc = new TelegramCommands(BOT_NAME);
-require('./helper/setCommands')(tc);
-
 
 app.post('/update', function(req, res, next) {
   //console.log('update!  %j', req.body);
