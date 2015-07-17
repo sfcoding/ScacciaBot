@@ -83,9 +83,9 @@ app.get('/',function(req,res,next){
 
 //app.use('/debugdb',require('./routes/debugDB'));
 
-var TelegramCommands = require('../lib/telegramCommands');
+var TelegramCommands = require('./lib/telegramCommands');
 var tc = new TelegramCommands(BOT_NAME);
-require('/helper/setCommands')(tc);
+require('./helper/setCommands')(tc);
 
 
 app.post('/update', function(req, res, next) {
